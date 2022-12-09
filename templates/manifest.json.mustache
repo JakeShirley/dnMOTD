@@ -1,0 +1,31 @@
+{
+    "format_version": 2,
+    "header": {
+        "name": "{{{package_name}}}",
+        "description": "{{{package_description}}}",
+        "min_engine_version": [
+            1,
+            18,
+            20
+        ],
+        "uuid": "90d7ab62-e8eb-4882-a710-36760e5a9b36",
+        "version": "{{{package_version}}}"
+    },
+    "modules": [
+        {
+            "language": "javascript",
+            "type": "script",
+            "uuid": "af203511-4cf3-4b12-9ef8-a43fe9a75156",
+            "entry": "scripts/entry.js",
+            "version": "{{{package_version}}}"
+        }
+    ],
+    "dependencies": [
+        {{#pack_dependencies}}
+        {
+            "module_name": "{{{name}}}",
+            "version": "{{{version}}}"
+        }{{^is_last}},{{/is_last}}
+        {{/pack_dependencies}}
+    ]
+}
