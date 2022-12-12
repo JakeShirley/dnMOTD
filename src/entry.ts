@@ -14,6 +14,16 @@ const dnDynamicProperties = {
   [dnMotdPropertyKey]: 255,
 };
 
+function debugInfo(message: string) {
+  console.warn(`[dnINFO] ${message}`);
+}
+function debugWarning(message: string) {
+  console.warn(`[dnWARN] ${message}`);
+}
+function debugError(message: string) {
+  console.error(`[dnERROR] ${message}`);
+}
+
 type dnCommandCallback = (player: server.Player, command: string) => boolean;
 
 const dnCommands: { [key: string]: dnCommandCallback } = {
@@ -130,7 +140,7 @@ function generateMOTD(player: server.Player, message: string) {
       const newResultMessage = resultMessage.replace(formatter.regex, function (match: string) {
         const result = formatter.format(player, match);
 
-        console.warn(`Formatter '${formatter.name}': '${match}' => '${result}'`);
+        debugInfo(`Formatter '${formatter.name}': '${match}' => '${result}'`);
 
         return result;
       });
@@ -159,7 +169,8 @@ server.world.events.playerSpawn.subscribe(async (e: server.PlayerSpawnEvent) => 
   if (e.initialSpawn) {
     await sleep(50);
     const motdMessage = server.world.getDynamicProperty(dnMotdPropertyKey);
-    player.tell(motdMessage as string);
+    const motd = generateMOTD(player, motdMessage as string);
+    player.tell(motd);
   }
 });
 
