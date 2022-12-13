@@ -4,15 +4,14 @@ const mustache = require("mustache");
 const fs = require("fs").promises;
 const path = require("path");
 const semver = require("semver");
+const argv = require("yargs").argv;
 
 const packageJson = require("./package.json");
 const packageLockJson = require("./package-lock.json");
 
 const templatesDir = "templates";
-//const rootDir = "C:/Users/Admin/Desktop/bedrock-server-1.19.60.23/development_behavior_packs/dnmotd";
-//const rootDir =
-//  "C:/Users/Admin/AppData/Local/Packages/Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe/LocalState/games/com.mojang/development_behavior_packs/dnMOTD";
-const rootDir = "C:/src/mc/build/win32_server_x64/handheld/src-server/Release/development_behavior_packs/dnmotd";
+const rootDir = argv.behavior_packs_dir;
+
 const distDir = "dist";
 
 async function generateManifest() {
@@ -47,7 +46,8 @@ async function generateManifest() {
 }
 
 function copySourceFiles() {
-  return gulp.src(path.join("**/*.*"), { cwd: distDir }).pipe(gulp.dest(rootDir));
+  const packageName = packageJson.name;
+  return gulp.src(path.join("**/*.*"), { cwd: distDir }).pipe(gulp.dest(path.join(rootDir, packageName)));
 }
 
 module.exports = {

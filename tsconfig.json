@@ -9,7 +9,7 @@
     "allowJs": true
   },
   "lib": [
-    "es2015"
+    "ES2020"
   ],
   "include": [
     "src/**/*.ts",

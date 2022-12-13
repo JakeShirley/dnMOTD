@@ -1,5 +1,5 @@
 import * as server from "@minecraft/server";
-import sleep from "./sleep";
+import sleep from "./sleep.js";
 
 const dnAdminTag = "dnadmin";
 const dnCommandPrefix = "!dn";
@@ -164,10 +164,9 @@ server.world.events.worldInitialize.subscribe((e) => {
   e.propertyRegistry.registerWorldDynamicProperties(propertyDefs);
 });
 
-server.world.events.playerSpawn.subscribe(async (e: server.PlayerSpawnEvent) => {
+server.world.events.playerSpawn.subscribe((e: server.PlayerSpawnEvent) => {
   const player = e.player;
   if (e.initialSpawn) {
-    await sleep(50);
     const motdMessage = server.world.getDynamicProperty(dnMotdPropertyKey);
     const motd = generateMOTD(player, motdMessage as string);
     player.tell(motd);
@@ -176,7 +175,7 @@ server.world.events.playerSpawn.subscribe(async (e: server.PlayerSpawnEvent) => 
 
 server.world.events.blockBreak.subscribe((e) => {
   const player = e.player;
-  player.nameTag = `${player.name} - ${e.block.typeId}`;
+  player.nameTag = player.name;
   const motdMessage = server.world.getDynamicProperty(dnMotdPropertyKey);
   const motd = generateMOTD(player, motdMessage as string);
   player.tell(motd);

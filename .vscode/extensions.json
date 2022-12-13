@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "mojang-studios.minecraft-debugger"
+    "mojang-studios.minecraft-debugger",
+    "spadin.memento-inputs"
   ]
 }
