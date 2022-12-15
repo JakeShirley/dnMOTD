@@ -21,6 +21,7 @@ async function generateManifest() {
     package_version: packageJson.version,
     // Generate a list of Minecraft dependencies from our NPM dependencies
     pack_dependencies: Object.keys(packageLockJson.dependencies)
+      // Scope to '@minecraft' packages and assume all exist in game
       .filter((x) => x.startsWith("@minecraft/"))
       .map((x) => {
         // Strip '1.1.0-beta.1.19.60-preview.23' to 1.1.0-beta'
