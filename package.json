@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@minecraft/server": "^1.1.0-beta.1.19.60-preview.23",
+    "@minecraft/server": "beta",
     "gulp": "^4.0.2",
     "mustache": "^4.2.0",
     "semver": "^7.3.8",

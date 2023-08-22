@@ -30,13 +30,13 @@ const dnCommands: { [key: string]: dnCommandCallback } = {
   setmotd: function (player: server.Player, command: string): boolean {
     server.world.setDynamicProperty(dnMotdPropertyKey, command);
 
-    player.tell(`Set MOTD to:\n${command}`);
+    player.sendMessage(`Set MOTD to:\n${command}`);
     return true;
   },
   setmotdtz: function (player: server.Player, command: string): boolean {
     server.world.setDynamicProperty(dnMotdPropertyTimeZoneKey, command);
 
-    player.tell(`Set MOTD time sone to:\n${command}`);
+    player.sendMessage(`Set MOTD time sone to:\n${command}`);
     return true;
   },
 };
@@ -88,7 +88,7 @@ const dnMotdFormatStrings: MOTDFormatter[] = [
     example: "#mctimetick#",
     regex: new RegExp("#mctimetick#"),
     format: function (player: server.Player, matchString: string) {
-      return `${server.world.getTime()}`;
+      return `${server.world.getAbsoluteTime()}`;
     },
   },
   {
@@ -96,7 +96,7 @@ const dnMotdFormatStrings: MOTDFormatter[] = [
     example: "#mctimestr#",
     regex: new RegExp("#mctimestr#"),
     format: function (player: server.Player, matchString: string) {
-      const tick = server.world.getTime();
+      const tick = server.world.getTimeOfDay();
       const hour = (Math.floor(tick / 1000) + 8) % 24;
       const minute = Math.floor(((tick % 1000) / 1000) * 60);
       return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
@@ -154,7 +154,7 @@ function generateMOTD(player: server.Player, message: string) {
   return resultMessage;
 }
 
-server.world.events.worldInitialize.subscribe((e) => {
+server.world.afterEvents.worldInitialize.subscribe((e) => {
   const propertyDefs = new server.DynamicPropertiesDefinition();
 
   for (const dynamicProperty of Object.keys(dnDynamicProperties)) {
@@ -164,24 +164,24 @@ server.world.events.worldInitialize.subscribe((e) => {
   e.propertyRegistry.registerWorldDynamicProperties(propertyDefs);
 });
 
-server.world.events.playerSpawn.subscribe((e: server.PlayerSpawnEvent) => {
+server.world.afterEvents.playerSpawn.subscribe((e: server.PlayerSpawnAfterEvent) => {
   const player = e.player;
   if (e.initialSpawn) {
     const motdMessage = server.world.getDynamicProperty(dnMotdPropertyKey);
     const motd = generateMOTD(player, motdMessage as string);
-    player.tell(motd);
+    player.sendMessage(motd);
   }
 });
 
-server.world.events.blockBreak.subscribe((e) => {
+server.world.afterEvents.blockBreak.subscribe((e) => {
   const player = e.player;
   player.nameTag = player.name;
   const motdMessage = server.world.getDynamicProperty(dnMotdPropertyKey);
   const motd = generateMOTD(player, motdMessage as string);
-  player.tell(motd);
+  player.sendMessage(motd);
 });
 
-server.world.events.beforeChat.subscribe((e) => {
+server.world.beforeEvents.chatSend.subscribe((e) => {
   const player = e.sender;
   const message = e.message;
 
@@ -194,6 +194,7 @@ server.world.events.beforeChat.subscribe((e) => {
   }
 
   const parsedCommand = message.slice(dnCommandPrefix.length).trim();
+  e.cancel = true;
 
   for (let dnCommand of Object.keys(dnCommands)) {
     const commandCallback = dnCommands[dnCommand];
